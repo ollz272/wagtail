@@ -417,13 +417,15 @@ class PanelGroup(Panel):
     Concrete subclasses must attach a 'children' property
     """
 
-    def __init__(self, children=(), *args, **kwargs):
+    def __init__(self, children=(), permission=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.children = children
+        self.permission = permission
 
     def clone_kwargs(self):
         kwargs = super().clone_kwargs()
         kwargs["children"] = self.children
+        kwargs["permission"] = self.permission
         return kwargs
 
     def get_form_options(self):
@@ -527,8 +529,22 @@ class PanelGroup(Panel):
                 if child.is_shown()
             ]
 
-        def is_shown(self):
+        def any_children_shown(self):
+            """
+            Helper function that calls `is_shown` on any child panels the group
+            contains.
+            """
             return any(child.is_shown() for child in self.children)
+
+        def is_shown(self):
+            if self.panel.permission:
+                # If a permission is set and passes, just check the children.
+                if self.request.user.has_perm(self.panel.permission):
+                    return self.any_children_shown()
+                return False
+
+            # If no permissions, just check regular.
+            return self.any_children_shown()
 
         @property
         def media(self):

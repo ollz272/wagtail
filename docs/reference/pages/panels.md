@@ -234,6 +234,16 @@ Note that you can use `classname="collapsed"` to load the panel collapsed under 
        ``SnippetChooserPanel`` is no longer required to obtain a document chooser interface.
 ```
 
+### PanelGroup
+```{eval-rst}
+.. class:: PanelGroup(children=(), permission=None, *args, **kwargs)
+    .. attribute:: PanelGroup.children
+        An iterable of child panels that this panel group contains.
+    .. attribute:: PanelGroup.permission (optional)
+        Allows a panel to be selectively shown to users with sufficient permission. Accepts a permission codename such as ``'myapp.change_blog_category'`` - if the logged-in user does not have that permission, the field will be omitted from the form. See Django's documentation on :ref:`custom permissions <django:custom-permissions>` for details on how to set permissions up; alternatively, if you want to set a field as only available to superusers, you can use any arbitrary string (such as ``'superuser'``) as the codename, since superusers automatically pass all permission tests.
+        On top of this, if users dont have sufficient permission to view any of the children panels, then the panel group will also be omitted from the admin interface.
+```
+
 ## Field Customisation
 
 By adding CSS classes to your panel definitions or adding extra parameters to your field definitions, you can control much of how your fields will display in the Wagtail page editing interface. Wagtail's page editing interface takes much of its behaviour from Django's admin, so you may find many options for customisation covered there.
