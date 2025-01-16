@@ -23,6 +23,7 @@ from wagtail.images.models import (
 from wagtail.images.rect import Rect
 from wagtail.models import Collection, GroupCollectionPermission, Page, ReferenceIndex
 from wagtail.test.testapp.models import (
+    CustomRendition,
     EventPage,
     EventPageCarouselItem,
     ReimportedImageModel,
@@ -519,6 +520,12 @@ class TestRenditions(TestCase):
 
     def test_get_rendition_model(self):
         self.assertIs(Image.get_rendition_model(), Rendition)
+
+    def test_stock_rendition_contains_unique_together_constraint(self):
+        self.assertEqual([], Rendition.check())
+
+    def test_custom_rendition_may_have_unique_constraint(self):
+        self.assertEqual([], CustomRendition.check())
 
     def test_minification(self):
         rendition = self.image.get_rendition("width-400")
